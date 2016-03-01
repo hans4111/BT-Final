@@ -14,8 +14,8 @@ using namespace std;
 
 void BTComm(void *param) {
 	int currentround = 0;
-	char receive[4] = "";
-	char receive2[4] = "";
+	char receive[6] = "";
+	char receive2[6] = "";
 	stringstream translate;
 	int finR = 999;
 	
@@ -68,10 +68,10 @@ void BTComm(void *param) {
 				Sleep(100);
 				break;
 			}
-			else {
+			/*else {
 				currentround = 99;
 				break;
-			}
+			}*/
 		case(3) :
 			SP.WriteData("R", 1);
 			translate << rOutStatus;
@@ -85,10 +85,10 @@ void BTComm(void *param) {
 				Sleep(100);
 				break;
 			}
-			else {
+			/*else {
 				currentround = 99;
 				break;
-			}
+			}*/
 		case(98) :
 			SP.WriteData("E", 1);
 			Sleep(50);
@@ -99,7 +99,9 @@ void BTComm(void *param) {
 				break;
 			}
 			else {
-				globError = 1;
+				globError = 0;
+				cout << "error \n" << endl;
+				currentround = 0;
 				break;
 			}
 		case(99):
@@ -112,26 +114,48 @@ void BTComm(void *param) {
 				break;
 			}
 			else {
-				globError = 1;
-				break;
-			}
-		}
-		if (globError == 1) {
-			Sleep(300);
-			SP.WriteData("E", 1);
-			Sleep(300);
-			SP.ReadData(receive, 1);
-			if (receive[0] == 'E') {
+				globError = 0;
+				cout << "error \n" << endl;
 				currentround = 0;
-				Sleep(100);
 				break;
-			}
-			else {
-				SP.~Serial();
-				SP = Serial(comm);
 			}
 		}
 		Sleep(500);
 	}
+	if (cont == 0) {
+		int shutdown1 = 1;
+		int shutdown2 = 1;
+		while (shutdown1 == 0 || shutdown2 == 0) {
+			rOutStatus = 0;
+			dOutStatus = 0;
+			SP.WriteData("O", 1);
+			translate << dOutStatus;
+			translate >> receive;
+			translate.clear();
+			SP.WriteData(receive, 3);
+			Sleep(100);
+			SP.ReadData(receive, 1);
+			if (receive[0] != 'X') {
+				shutdown1 = 1;
+			}
+			else
+				shutdown1 = 0;
+			Sleep(100);
+			SP.WriteData("R", 1);
+			translate << rOutStatus;
+			translate >> receive;
+			SP.WriteData(receive, 2);
+			translate.clear();
+			Sleep(100);
+			SP.ReadData(receive, 1);
+			if (receive[0] != 'X') {
+				shutdown2 = 1;
+			}
+			else
+				shutdown2 = 0;
+			Sleep(100);
+		}
+	}
+	
 	SP.~Serial();
 }

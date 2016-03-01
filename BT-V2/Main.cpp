@@ -81,19 +81,21 @@ int main() {
 			cout << "Please input the new port setting in binary (Ex: 01010101):" << endl;
 			cin >> change;
 			cin.ignore();
+			change = parseinput(change);
 			if (change > 255 || change < 0)
 				cout << "Invalid port setting." << endl;
 			else
-				dOutStatus = parseinput(change);
+				dOutStatus = change;
 		}
 		else if (command == 'R' || command == 'r') {
 			cout << "Please input the new port setting in binary (Ex: 1001):" << endl;
 			cin >> change;
 			cin.ignore();
+			change = parseinput(change);
 			if (change > 15 || change < 0)
 				cout << "Invalid port setting." << endl;
 			else
-				rOutStatus = parseinput(change);
+				rOutStatus = change;
 		}
 		else if (command == 'e' || command == 'E')
 			cont = 0;
