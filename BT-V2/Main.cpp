@@ -19,10 +19,10 @@ void HelpMessages();
 int parseinput(int input);
 
 //external ints used to pass data betweeen our threads. Not the cleanest or most stable method, but it works for this situation
-extern int dOutStatus = 255;
+extern int dOutStatus = 0;
 extern int dInStatus = 10;
-extern int aInStatus[2] = { 10,10 };
-extern int rOutStatus = 14;
+extern int aInStatus[2] = { 0,0};
+extern int rOutStatus = 0;
 extern int established = 0;
 extern int cont = 1;
 extern int globError = 0;

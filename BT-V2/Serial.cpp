@@ -43,7 +43,7 @@ Serial::Serial(char *portName)
 			dcbSerialParams.Parity = NOPARITY;
 			//Setting the DTR to Control_Enable ensures that the Arduino is properly
 			//reset upon establishing a connection
-			dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
+			//dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
 
 			//Set the parameters and check for their proper application
 			if (!SetCommState(hSerial, &dcbSerialParams))

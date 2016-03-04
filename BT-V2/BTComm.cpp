@@ -14,8 +14,9 @@ using namespace std;
 
 void BTComm(void *param) {
 	int currentround = 0;
-	char receive[6] = "";
-	char receive2[6] = "";
+	char receive[4] = "";
+	char receive2[4] = "";
+	char test[1] = "";
 	stringstream translate;
 	int finR = 999;
 	
@@ -29,67 +30,120 @@ void BTComm(void *param) {
 	while (cont == 1) {
 		switch (currentround) {
 		case(0) :
+			//cout << "Case Din" << endl;
 			SP.WriteData("I", 1);
 			Sleep(50);
 			SP.ReadData(receive, 3);
 			translate << receive;
 			translate >> finR;
 			dInStatus = finR;
-			currentround++;
+			currentround=1;
+			translate.str(string());
 			translate.clear();
-			Sleep(100);
+			Sleep(150);
+			while (SP.ReadData(test, 1) != 0) {};
+			receive[0] = ' ';
+			receive[1] = ' ';
+			receive[2] = ' ';
+			receive[3] = ' ';
+			receive[4] = ' ';
 			break;
 		case(1) :
+			//cout << "Case Ain" << endl;
 			SP.WriteData("A", 1);
 			Sleep(50);
 			SP.ReadData(receive, 3);
-			SP.ReadData(receive2, 3);
 			translate << receive;
 			translate >> finR;
 			aInStatus[0] = finR;
+			translate.str(string());
 			translate.clear();
-			translate << receive2;
+			SP.ReadData(receive, 3);
+			translate << receive;
 			translate >> finR;
 			aInStatus[1] = finR;
+			translate.str(string());
 			translate.clear();
-			currentround++;
-			Sleep(100);
+			currentround=2;
+			Sleep(150);
+			while (SP.ReadData(test, 1) != 0) {};
+			receive[0] = ' ';
+			receive[1] = ' ';
+			receive[2] = ' ';
+			receive[3] = ' ';
+			receive[4] = ' ';
 			break;
 		case(2) :
-			SP.WriteData("O", 1);
-			translate << dOutStatus;
+			//cout << "Case Dout" << endl;
+			//SP.WriteData("O", 1);
+			translate << 'O'<< dOutStatus;
 			translate >> receive;
+			translate.str(string());
 			translate.clear();
-			SP.WriteData(receive, 3);
-			Sleep(100);
+			//cout << "Dout output: **" << receive <<"**"<< endl;
+			SP.WriteData(receive, 4);
+			Sleep(150);
 			SP.ReadData(receive, 1);
+			//cout << "Read input for Dout: **" << receive << "**" << endl;
 			if (receive[0] == 'X') {
-				currentround++;
+				currentround=3;
 				Sleep(100);
+				while (SP.ReadData(test, 1) != 0) {};
+				receive[0] = ' ';
+				receive[1] = ' ';
+				receive[2] = ' ';
+				receive[3] = ' ';
+				receive[4] = ' ';
 				break;
 			}
-			/*else {
-				currentround = 99;
+			else {
+				currentround = 98;
+				while (SP.ReadData(test, 1) != 0) {};
+				receive[0] = ' ';
+				receive[1] = ' ';
+				receive[2] = ' ';
+				receive[3] = ' ';
+				receive[4] = ' ';
 				break;
-			}*/
+			}
 		case(3) :
-			SP.WriteData("R", 1);
-			translate << rOutStatus;
+			//cout << "Case Rout" << endl;
+			//SP.WriteData("R", 1);
+			//translate << rOutStatus;
+			//translate >> receive;
+			translate << 'R' << rOutStatus;
 			translate >> receive;
-			SP.WriteData(receive, 2);
+			//cout << "THIS IS THE RECEIVE OUTPUT: **" << receive << "**" << endl;
+			SP.WriteData(receive, 3);
+			translate.str(string());
 			translate.clear();
-			Sleep(100);
+			SP.WriteData(receive, 3);
+			Sleep(150);
 			SP.ReadData(receive, 1);
+			//cout << "THIS IS THE READ INPUT FOR ROUT: **" << receive << "**" << endl;
 			if (receive[0] == 'X') {
 				currentround = 0;
 				Sleep(100);
+				while (SP.ReadData(test, 1) != 0) {};
+				receive[0] = ' ';
+				receive[1] = ' ';
+				receive[2] = ' ';
+				receive[3] = ' ';
+				receive[4] = ' ';
 				break;
 			}
-			/*else {
+			else {
 				currentround = 99;
+				while (SP.ReadData(test, 1) != 0) {};
+				receive[0] = ' ';
+				receive[1] = ' ';
+				receive[2] = ' ';
+				receive[3] = ' ';
+				receive[4] = ' ';
 				break;
-			}*/
+			}
 		case(98) :
+			cout << "Case Dout Error" << endl;
 			SP.WriteData("E", 1);
 			Sleep(50);
 			SP.ReadData(receive, 1);
@@ -100,11 +154,12 @@ void BTComm(void *param) {
 			}
 			else {
 				globError = 0;
-				cout << "error \n" << endl;
-				currentround = 0;
+				cout << "Glob Error, receive status: " <<receive<< endl;
+				currentround = 3;
 				break;
 			}
-		case(99):
+		case(99) :
+			cout << "Case Rout Error" << endl;
 			SP.WriteData("E", 1);
 			Sleep(50);
 			SP.ReadData(receive, 1);
@@ -115,12 +170,13 @@ void BTComm(void *param) {
 			}
 			else {
 				globError = 0;
-				cout << "error \n" << endl;
+				cout << "Glob Error, receive status: " << receive << endl;
 				currentround = 0;
 				break;
 			}
+
 		}
-		Sleep(500);
+		//Sleep(200);
 	}
 	if (cont == 0) {
 		int shutdown1 = 1;
@@ -131,6 +187,7 @@ void BTComm(void *param) {
 			SP.WriteData("O", 1);
 			translate << dOutStatus;
 			translate >> receive;
+			translate.str(string());
 			translate.clear();
 			SP.WriteData(receive, 3);
 			Sleep(100);
@@ -145,6 +202,7 @@ void BTComm(void *param) {
 			translate << rOutStatus;
 			translate >> receive;
 			SP.WriteData(receive, 2);
+			translate.str(string());
 			translate.clear();
 			Sleep(100);
 			SP.ReadData(receive, 1);
