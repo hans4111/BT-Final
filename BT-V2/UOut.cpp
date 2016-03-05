@@ -24,7 +24,7 @@ void UOut(void *param) {
 		UI.printf("Digital In status:  %08s \n", digin);
 		//UI.printf("Digital In Status: %d \n", dInStatus);
 		_itoa(rOutStatus, rout, 2);
-		UI.printf("Relay Out Status:   %08s \n", rout	);
+		UI.printf("Relay Out Status:       %04s \n", rout	);
 		//UI.printf("Relay Out Status: %d \n", rOutStatus);
 		for (int i = 0; i < 2; i++) {
 			_itoa(aInStatus[i], anin, 2);

@@ -13,7 +13,7 @@ using namespace std;
 void BTComm(void *param) {
 	// initialize variables for state machine and translation
 	int currentround = 0;
-	char receive[4] = "";
+	char receive[6] = "";
 	char test[1] = "";
 	stringstream translate;
 	int finR = 0;
