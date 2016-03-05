@@ -1,9 +1,7 @@
 #include<iostream>
 #include<iomanip>
-#include<cmath>
 #include<Windows.h>
 #include<string>
-#include<bitset>
 #include<atlstr.h>
 #include<process.h>
 #include"SerialClass.h"
@@ -35,7 +33,7 @@ extern int globError = 0;
 **double digits then you must follow this syntax: "\\\\.\\COM10" Yes windows is weird. No we    **
 **dont know why it does this.																    **
 *************************************************************************************************/
-extern char* comm = "COM9";
+extern char* comm = "\\\\.\\COM11";
 
 HANDLE hThread;
 HANDLE gThread;
@@ -49,7 +47,7 @@ int main() {
 	cout << "View Help before we begin? (Y,N)" << endl;
 	cout << "Note that help will not be available while the application is running." << endl;
 	cin >> help;
-	//we are just going to sanity check the user, hopefully we never have this issue or its an accident (dear god i hope they dont put a number in)
+	//we are just going to sanity check the user, hopefully we never have this issue or its an accident (dear god i hope they can figure it out)
 	if (help != 'Y' && help != 'y' && help != 'N' && help != 'n') {
 		do{
 			cin.ignore();
@@ -62,22 +60,24 @@ int main() {
 
 	//initialize second thread for communications and the user interface output window. comms will spin until established
 	if (init() != 0) {
-		//this is literally an unknown errror, probably some sort of memory fault which would be of no fault of this program
-		cout << "Error, failure to initialize, End of line." << endl;
+		//this is literally an unknown errror, probably some sort of memory fault which would be of no fault of this program probably hardware
+		cout << "Unknown System Error, failure to initialize. \n End of line." << endl;
 		system("pause");
 		return 0;
 	}
 	//spinning while waiting for connection
 	while (established == 0) {}
-	//alert user of connection begin user interface after .5 seconds
+	//alert user of connection begin user interface after 1 second
 	cout << "Connection Established" << endl;
-	Sleep(500);
+	Sleep(1000);
 	system("cls");
 	while (cont == 1) {
+		//User Input
 		cout << "What would you like to do? (O -> Dout, R -> Relay, E -> terminate application)\n";		
 		cin >> command;
 		cin.ignore();
 		if (command == 'o' || command == 'O') {
+			//Digital Output interface
 			cout << "Please input the new port setting in binary (Ex: 01010101):" << endl;
 			cin >> change;
 			cin.ignore();
@@ -88,6 +88,7 @@ int main() {
 				dOutStatus = change;
 		}
 		else if (command == 'R' || command == 'r') {
+			//Relay Output interface
 			cout << "Please input the new port setting in binary (Ex: 1001):" << endl;
 			cin >> change;
 			cin.ignore();
@@ -98,23 +99,25 @@ int main() {
 				rOutStatus = change;
 		}
 		else if (command == 'e' || command == 'E')
+			//Exit command
 			cont = 0;
 	}
+	//We need to wait for the other threads to end before we close the porgram. They are given an infinite wait time because there shouldnt be any loops that continue to run
 	WaitForSingleObject(hThread, INFINITE);
 	WaitForSingleObject(gThread, INFINITE);
+	//Let the user press enter at the end. may remove this
 	system("pause");
 }
 
 int init(void) {
-	//for (int i = 0; i < 2; i++) {
-	//	aInStatus[i] = 0;
-	//}
+	//Start the comm and user interface threads
 	hThread = (HANDLE)_beginthread(BTComm, 0, NULL);
 	gThread = (HANDLE)_beginthread(UOut, 0, NULL);
 	return 0;
 }
 
 void HelpMessages(void) {
+	//This is the awesome help message!
 	system("cls");
 	cin.ignore(26,'\n');
 	cout << "Congratulations and Welcome to the WYSIWYG Bluetooth IO Suite.\n" << endl;
@@ -130,13 +133,14 @@ void HelpMessages(void) {
 	cout << "status. This should be done in the binary format, IE 11001100 for turning on ports 0,1,4, and 5. Since there are only " << endl;
 	cout << "four relays you should only input a 4 bit line. IE 1001, to activate relay 0 and 3.                                   \n" << endl;
 	cout << "When the E command is sent to exit the system will close the connection safely and shutdown the user output and then  " << endl;
-	cout << "it will close the main window. Please note that the IO Suite will hold existing output states when not connected to   " << endl;
-	cout << "the PC application. Please take appropriate caution with the device.\n" << endl;
+	cout << "it will close the main window. Please note that the IO Suite will will set all outputs to zero when the application   " << endl;
+	cout << "ends using the exit command. Please take appropriate caution with the device.\n" << endl;
 	cout << "After this help message closes the program will start immediately\n" << endl;
 	system("pause");
 }
 
 int parseinput(int input) {
+	//Parse binary input from the user into the number it represents for communication simplicity.
 	int fin = 0;
 	int bin;
 	int rem;
