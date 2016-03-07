@@ -12,10 +12,10 @@ void UOut(void *param) {
 	UI.Create("Bluetooth Data Output");
 	UI.cls();
 	while (cont == 1) {
-		char digin[33];
-		char digout[33];
-		char rout[33];
-		char anin[33];
+		char digin[16];
+		char digout[16];
+		char rout[16];
+		char anin[16];
 		UI.cls();
 		_itoa(dOutStatus, digout, 2);
 		UI.printf("Digital Out Status: %08s \n", digout);

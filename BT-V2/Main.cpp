@@ -2,6 +2,7 @@
 #include<iomanip>
 #include<Windows.h>
 #include<string>
+#include<sstream>
 #include<atlstr.h>
 #include<process.h>
 #include"SerialClass.h"
@@ -18,7 +19,7 @@ int parseinput(int input);
 
 //external ints used to pass data betweeen our threads. Not the cleanest or most stable method, but it works for this situation
 extern int dOutStatus = 0;
-extern int dInStatus = 10;
+extern int dInStatus = 0;
 extern int aInStatus[2] = { 0,0};
 extern int rOutStatus = 0;
 extern int established = 0;
@@ -33,7 +34,7 @@ extern int globError = 0;
 **double digits then you must follow this syntax: "\\\\.\\COM10" Yes windows is weird. No we    **
 **dont know why it does this.																    **
 *************************************************************************************************/
-extern char* comm = "\\\\.\\COM11";
+extern char* comm = "\\\\.\\COM13";
 
 HANDLE hThread;
 HANDLE gThread;
@@ -41,6 +42,9 @@ HANDLE gThread;
 char help;
 char command;
 int change;
+int comport;
+string s1;
+stringstream portTrans;
 
 int main() {
 	//Lets start the program with a help message! or let the user skip it if they are experienced
@@ -57,6 +61,15 @@ int main() {
 	}
 	if (help == 'Y' || help == 'y')
 		HelpMessages();
+
+	cout << "Please enter the COM port assigned by windows. The Number only, no spaces or characters. IE: 9" << endl;
+	cin >> comport;
+	if (comport > 9)
+		portTrans << "\\\\.\\COM" << comport;
+	else
+		portTrans << "COM" << comport;
+	s1 = portTrans.str();
+	comm = _strdup(s1.c_str());
 
 	//initialize second thread for communications and the user interface output window. comms will spin until established
 	if (init() != 0) {

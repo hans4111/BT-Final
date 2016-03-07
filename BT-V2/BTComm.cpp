@@ -31,6 +31,7 @@ void BTComm(void *param) {
 		switch (currentround) {
 		case(0) :
 			//Digital In Case
+			while (SP.ReadData(test, 1) != 0) {};
 			SP.WriteData("I", 1);
 			Sleep(50);
 			SP.ReadData(receive, 3);
@@ -40,6 +41,7 @@ void BTComm(void *param) {
 			translate >> finR;
 			//Set dIn to new value
 			dInStatus = finR;
+			finR = 0;
 			//Next case
 			currentround=1;
 			//Clear the string stream
@@ -49,11 +51,8 @@ void BTComm(void *param) {
 			//Clear the input buffer
 			while (SP.ReadData(test, 1) != 0) {};
 			//Set receive to new lines for the next info grab
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			break;
 		case(1) :
 			//Analog Input Code
@@ -69,11 +68,8 @@ void BTComm(void *param) {
 			translate.str(string());
 			translate.clear();
 			//clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			//analog in port 2
 			SP.ReadData(receive, 3);
 			//translate char to int
@@ -89,11 +85,8 @@ void BTComm(void *param) {
 			//Clear input buffer
 			while (SP.ReadData(test, 1) != 0) {};
 			//Clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			break;
 		case(2) :
 			//Digital Out Case
@@ -114,33 +107,24 @@ void BTComm(void *param) {
 			SP.WriteData(receive, 4);
 			Sleep(150);
 			//clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			SP.ReadData(receive, 1);
 			//check success response
 			if (receive[0] == 'X') {
 				currentround=3;
 				Sleep(100);
 				while (SP.ReadData(test, 1) != 0) {};
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				break;
 			}
 			else {
 				//if fail we go to a second error case and check communication issues
 				currentround = 98;
 				while (SP.ReadData(test, 1) != 0) {};
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				break;
 			}
 		case(3) :
@@ -158,11 +142,8 @@ void BTComm(void *param) {
 			translate.str(string());
 			translate.clear();
 			//clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			Sleep(150);
 			//receive confirmation
 			SP.ReadData(receive, 1);
@@ -174,11 +155,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				break;
 			}
 			else {
@@ -187,11 +165,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				break;
 			}
 		case(98) :
@@ -207,11 +182,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				Sleep(100);
 				break;
 			}
@@ -222,11 +194,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				//for now we dont have global error handeling so continue on the next case
 				currentround = 3;
 				break;
@@ -244,11 +213,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				Sleep(100);
 				break;
 			}
@@ -259,11 +225,8 @@ void BTComm(void *param) {
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
-				receive[0] = (char)'/0';
-				receive[1] = (char)'/0';
-				receive[2] = (char)'/0';
-				receive[3] = (char)'/0';
-				receive[4] = (char)'/0';
+				for (int i = 0; i < 5; i++)
+					receive[i] = (char)' ';
 				//go to next case since we dont have global error handeling yet
 				currentround = 0;
 				break;
@@ -277,14 +240,14 @@ void BTComm(void *param) {
 	//or B) the uC cyles which resets output to default off
 	if (cont == 0) {
 		//we want to be able to error check the shutdown cycle for both Relay and Digital out
-		int shutdown1 = 1;
-		int shutdown2 = 1;
-		//Set shutdown values to 0 for all off
+		int shutdown1 = 0;
+		int shutdown2 = 0;
 		rOutStatus = 0;
 		dOutStatus = 0;
+		//Set shutdown values to 0 for all off
 		while (shutdown1 == 0 || shutdown2 == 0) {
 			//Write dOutput command 
-			translate << 'O' << dOutStatus;
+			translate << 'O' << '0' << '0' << '0';
 			translate >> receive;
 			//clear string stream
 			translate.str(string());
@@ -292,25 +255,22 @@ void BTComm(void *param) {
 			//write bluetooth
 			SP.WriteData(receive, 4);
 			//clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			Sleep(100);
 			//we wait to allow bt to respond and then check response
 			SP.ReadData(receive, 1);
 			//clear input buffer
 			while (SP.ReadData(test, 1) != 0) {};
-			if (receive[0] != 'X') {
+			if (receive[0] == 'X') {
 				//successful error check command shutdown of dOut successful
 				shutdown1 = 1;
 			}
-			else//fail rerun
+			else
 				shutdown1 = 0;
 			Sleep(100);
 			//Wait so no overlap then generat Rout command
-			translate << 'R' << rOutStatus;
+			translate << 'R' << '0' << '0';
 			translate >> receive;
 			//Write command to BT
 			SP.WriteData(receive, 3);
@@ -318,22 +278,20 @@ void BTComm(void *param) {
 			translate.str(string());
 			translate.clear();
 			//clear receive
-			receive[0] = (char)'/0';
-			receive[1] = (char)'/0';
-			receive[2] = (char)'/0';
-			receive[3] = (char)'/0';
-			receive[4] = (char)'/0';
+			for (int i = 0; i < 5; i++)
+				receive[i] = (char)' ';
 			Sleep(100);
 			SP.ReadData(receive, 1);
 			//clear input buffer
 			while (SP.ReadData(test, 1) != 0) {};
-			if (receive[0] != 'X') {
+			if (receive[0] == 'X') {
 				//successful error check command shutdown of rOut successful
 				shutdown2 = 1;
 			}
-			else//fail rerun
+			else
 				shutdown2 = 0;
 			Sleep(100);
+
 		}
 	}
 	//Close serial connection at end of thread.
