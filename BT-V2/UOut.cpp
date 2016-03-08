@@ -1,3 +1,4 @@
+#include<iostream>
 #include<bitset>
 #include<stdlib.h>
 #include"UserOutput.h"
@@ -16,6 +17,7 @@ void UOut(void *param) {
 		char digout[16];
 		char rout[16];
 		char anin[16];
+		float aninV;
 		UI.cls();
 		_itoa(dOutStatus, digout, 2);
 		UI.printf("Digital Out Status: %08s \n", digout);
@@ -27,8 +29,14 @@ void UOut(void *param) {
 		UI.printf("Relay Out Status:       %04s \n", rout	);
 		//UI.printf("Relay Out Status: %d \n", rOutStatus);
 		for (int i = 0; i < 2; i++) {
-			_itoa(aInStatus[i], anin, 2);
-			UI.printf("Ain Channel %d:      %08s \n", i, anin);
+			if (aInStatus[i] == 255)
+				UI.printf("Ain Channel %d:      Disconnected \n", i, anin);
+			else{
+				aninV = ((float)aInStatus[i] * 10) / 127;
+				UI.printf("Ain Channel %d:   %f V \n", i, aninV);
+			}
+			//_itoa(aInStatus[i], anin, 2);
+			//UI.printf("Ain Channel %d:      %08s \n", i, anin);
 			//UI.printf("A In channel %d: %d \n", i, aInStatus[i]);
 		}
 
