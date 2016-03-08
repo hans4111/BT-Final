@@ -1,9 +1,9 @@
 ﻿  BTComm.cpp
-  ConsoleLogger.cpp
   Main.cpp
-  Serial.cpp
   UOut.cpp
   Generating code
-  All 243 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  132 of 304 functions (43.4%) were compiled, the rest were copied from previous compilation.
+    61 functions were new in current compilation
+    16 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   BT-V2.vcxproj -> C:\Users\Nick\Desktop\Senior Design\2015-16\code\Github\BT-Final\Release\BT-V2.exe
