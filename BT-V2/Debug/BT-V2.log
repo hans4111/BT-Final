@@ -1,2 +1,7 @@
 ﻿  UOut.cpp
+  Serial.cpp
+  Main.cpp
+  ConsoleLogger.cpp
+  BTComm.cpp
+  Generating Code...
   BT-V2.vcxproj -> C:\Users\Nick\Desktop\Senior Design\2015-16\code\Github\BT-Final\Debug\BT-V2.exe

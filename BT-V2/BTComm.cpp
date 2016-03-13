@@ -9,6 +9,54 @@
 #include"BTComm.h"
 using namespace std;
 
+/**************************************************************************************************************************************************
+**												EXPLANATION OF THE COMMUNICATION PROTOCOL														 **
+**Below is the designed bluetooth protocal being put into effect. As a basic overview there are 4 main commands and one error check command in   **
+**this protocol. The four commands are I, A, O, and R. For the inputs I and A no other commands are needed and the uC will return the values of  **
+**the 8 bit register represented in a integer. This integer arrives to us as three characters that we then translate using stringstreams into an **
+**integer. The integer is then saved to the global variables that are used by the user output. For example, if all of the digital inputs are on, **
+**and we send the 'I' command. The uC will return three characters '2''5''5', which we then put into a string stream and dump into an integer for**
+**the value 255. 255 is then stored to the global int. For the case of the analog inputs (the 'A' command), since there are two channels the uC  **
+**will return six characters, with the first three representing the the first channel and the second three representing the second channel. It   **
+**is up to us to parse the information from the controller seperatly. For outputs we follow the same pattern. The 'O' command is the digital out **
+**command, and we send the decimal representation of the 8 bit register. IE for all on we send 255, for just pin 7 we send 128 and so on. The    **
+**protocol used by windows for serial devices treats the devices like an open file so all data sent is characters. Therefore for the output		 **
+**commands we put the integer representation into a string stream and then dump it in to a character array from the stringstream. The uC expects **
+**three characters so if our output is only single or double digit we prefix it with '0' to maintain three character output. For the Relay outs	 **
+**the 'R' command, we follow the exact same method, EXCEPT it only uses 4 bits and therefore a output of two characters(besides the command).	 **
+**The final part of the output commands is the uC's response to our command. After any output command is sent and received the uC should return  **
+**an 'X' for successfull write. If this response is not received the code enters an error state. In the error state we send the uC an 'E' command**
+**in return we should receive an 'E' in response. When a successful error check and response occurs we return to the previous write case to		 **
+**attempt the write the command again. If the error is not returned the user is informed of a packet drop error and the code will restart from   **
+**the first case. For future development tracking of dropped package, connection checking, error response will be more fully integrated into this**
+**system.																																		 **
+**************************************************************************************************************************************************/
+
+/**************************************************************************************************************************************************
+**												Use of the Serial Class for communication														 **
+**The Serial.cpp and the Serial.h files included were sourced from http://www.codeproject.com/Articles/992/Serial-library-for-C#_articleTop      **
+**It was written by Ramon de Klein and released into the public domain. A better explanation can be found at the site above, however I will give **
+**a breif overview of its use.																													 **
+**																																				 **
+**The class comes with built in functions that handle the Windows Serial communication. Windows uses SPP and creates a virtual COM Port for a	 **
+**serial bluetooth devices. This is why we have the user connect to the IO suite outside of the program, and then type in the COM Port assigned  **
+**by Windows. To open the serial connection we create a new Varaible of type Serial defined in the class. As seen by in line 70 we create a name **
+**and then call Serial(comm) where comm is the com port assigned by windows. The definition of that variable is found in Main.cpp on line 29.    **
+**The following information about the commands in the class is copied from the Serial.h file:													 **
+**	Initialize Serial communication with the given COM port																						 **
+**		Serial(char *portName);																													 **
+**	Close the connection																														 **
+**		~Serial();																																 **
+**	Read data in a buffer, if nbChar is greater than the maximum number of bytes available, it will return only the bytes available. The function**
+**  return -1 when nothing could be read, or the number of bytes actually read.																	 **
+**		int ReadData(char *buffer, unsigned int nbChar);																						 **
+**	Writes data from a buffer through the Serial connection return true on success.																 **
+**		bool WriteData(char *buffer, unsigned int nbChar);																						 **
+**	Check if we are actually connected																											 **
+**		bool IsConnected();																														 **
+**************************************************************************************************************************************************/
+
+
 
 void BTComm(void *param) {
 	// initialize variables for state machine and translation
@@ -27,11 +75,15 @@ void BTComm(void *param) {
 			SP = Serial(comm);
 	}
 	while (cont == 1) {
-		//State machine running until 
+		//State machine running until the exit command is given in by the user in main.cpp
 		switch (currentround) {
 		case(0) :
 			//Digital In Case
+			//Clear the buffers in case somethin got left in them
 			while (SP.ReadData(test, 1) != 0) {};
+			//A quick side note, we fill receive with whitespace to clear it because stringstream sees whitespace as end of line, not return characters
+			//Also for some reason when a for loop is used to clear receive data corruption tends to occur for some reason, so due to lack of time to continue
+			//debugging I just implemented the clear piece by piece, future development will include fixing that issue
 			receive[0] = ' ';
 			receive[1] = ' ';
 			receive[2] = ' ';

@@ -30,9 +30,9 @@ extern int globError = 0;
 **The variable below is where the COM port in use by windows is defined.						**
 **In order to make this application work, pair with the I/O device through Windows BT manager   **
 **Then Windows will automatically set up a Virtual Com Port. Find which port was assigned		**
-**and then replace the "COM9" below with the appropriate "COMX" if the port assigned is in	    **
-**double digits then you must follow this syntax: "\\\\.\\COM10" Yes windows is weird. No we    **
-**dont know why it does this.																    **
+**and enter the number when requested by the program. We assign the appropirate "COMX" and if   **
+**the port assigned is in double digits then we follow this syntax: "\\\\.\\COM10" Yes windows  **
+**is weird. No we dont know why it does this.													**
 *************************************************************************************************/
 extern char* comm = "\\\\.\\COM13";
 
