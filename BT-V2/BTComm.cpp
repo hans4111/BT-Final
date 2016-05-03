@@ -281,8 +281,8 @@ void BTComm(void *param) {
 			}
 			else {
 				//set global error to 1 for true
-				globError = 1;
-				cout << "Glob Error, receive status: " <<receive<< endl;
+				//globError = 1;
+				//cout << "Glob Error, receive status: " <<receive<< endl;
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive
@@ -323,8 +323,8 @@ void BTComm(void *param) {
 			}
 			else {
 				//set global error to 1
-				globError = 1;
-				cout << "Glob Error, receive status: " << receive << endl;
+				//globError = 1;
+				//cout << "Glob Error, receive status: " << receive << endl;
 				//clear input buffer
 				while (SP.ReadData(test, 1) != 0) {};
 				//clear receive

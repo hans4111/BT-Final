@@ -6,6 +6,8 @@
 
 using namespace std;
 
+//User output was created using consolelogger.cpp obtained from http://www.codeproject.com/Articles/13368/Multiple-consoles-for-a-single-application
+//This was released under the public domain and more information can be found at the link above.
 
 
 void UOut(void *param) {
